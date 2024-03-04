@@ -17,7 +17,9 @@ INTERVAL=<INSERT INTERVAL>
 dns_ip=$(dig $HOST.$DOMAIN +short) #Check the registered IP in DNS
 while true
 do
-        public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com|awk -F'"' '{print $2}') #Check Public IP
+        #public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com|awk -F'"' '{print $2}')     #Check Public IP
+        public_ip=$(dig @resolver4.opendns.com myip.opendns.com +short|awk -F'"' '{print $2}')          # Change DNS lookup to account for ipv6 issue 
+
         if [ "$public_ip" != "$dns_ip" ]
         then
                 curl "https://dynamicdns.park-your-domain.com/update?host=$HOST&domain=$DOMAIN&password=$PASSWORD&ip=$public_ip"
